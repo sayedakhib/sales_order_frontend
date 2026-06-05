@@ -1,0 +1,22 @@
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #f5f6f8;
+  overflow-x: hidden; /* guard against accidental horizontal scroll */
+}
+.page-title { margin: 0 0 16px; }
+.totals-table td { padding: 4px 8px; }
+.totals-table td.label { color: #666; }
+.totals-table td.value { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* On small screens, let card headers wrap so action controls (e.g. the
+   product search box) drop below the title instead of overflowing. */
+@media (max-width: 575px) {
+  .ant-card-head-wrapper { flex-wrap: wrap; row-gap: 8px; }
+  .ant-card-head-title { min-width: 100%; }
+  .ant-card-extra { margin-inline-start: 0 !important; width: 100%; }
+  .ant-card-extra .ant-select,
+  .ant-card-extra .ant-input,
+  .ant-card-extra .ant-input-affix-wrapper { width: 100% !important; }
+}
