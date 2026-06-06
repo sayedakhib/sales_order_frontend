@@ -1,6 +1,4 @@
-// Client-side mirror of the backend order calc for live preview.
-// The server remains the source of truth on submit.
-
+//grand total calculations
 export const round = (v, d = 3) => {
   const f = 10 ** d;
   return Math.round((Number(v) + Number.EPSILON) * f) / f;
