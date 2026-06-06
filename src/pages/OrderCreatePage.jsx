@@ -6,7 +6,7 @@ import {
 import { DeleteOutlined, PlusOutlined, FilePdfOutlined, MailOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import {
-  searchCustomers, fetchCustomer, searchProducts, fetchUsers, fetchCompany,
+  fetchCustomers, searchCustomers, fetchCustomer, searchProducts, fetchUsers, fetchCompany,
   createOrder, orderPdfUrl, emailOrder,
 } from '../api/endpoints.js';
 import { calcFoc, computeLine, computeTotals } from '../utils/calc.js';
@@ -39,15 +39,16 @@ export default function OrderCreatePage() {
   useEffect(() => {
     fetchCompany().then((r) => setCompany(r.data)).catch(() => {});
     fetchUsers('sales_person').then((r) => setSalesPersons(r.data)).catch(() => {});
+    loadCustomers(); // preload some customers so the dropdown isn't empty
   }, []);
 
   const vatPercent = company.vatPercent ?? 5;
 
   // ---- Customer search ----
-  const onCustomerSearch = async (val) => {
-    if (!val) return;
+  // with no query we just list the first batch of customers; with a query we search.
+  const loadCustomers = async (query = '') => {
     try {
-      const res = await searchCustomers(val);
+      const res = query ? await searchCustomers(query) : await fetchCustomers({ limit: 50 });
       setCustomerOptions(
         res.data.map((c) => ({
           value: c._id,
@@ -58,6 +59,7 @@ export default function OrderCreatePage() {
       message.error(e.message);
     }
   };
+  const onCustomerSearch = (val) => loadCustomers(val);
   const onCustomerSelect = async (id) => {
     try {
       const res = await fetchCustomer(id);
@@ -258,8 +260,10 @@ export default function OrderCreatePage() {
               placeholder="Search customer by name or code"
               style={{ width: '100%' }}
               filterOption={false}
+              onFocus={() => { if (!customerOptions.length) loadCustomers(); }}
               onSearch={onCustomerSearch}
               onSelect={onCustomerSelect}
+              notFoundContent={null}
               options={customerOptions}
             />
           </Col>
